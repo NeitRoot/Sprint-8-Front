@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { RiVisaFill, RiMastercardFill } from "react-icons/ri";
+import {SiAmericanexpress } from "react-icons/si";
 import { CiMenuKebab } from "react-icons/ci";
 import { AiOutlineEye } from "react-icons/ai";
 import Logo from "@/app/assets/images/logo-removebg.png";
 
 // Obtener los datos de las tarjetas disponibles
-const fetchTarjetas = () => {
-  return fetch(`https://651449b58e505cebc2eb14a2.mockapi.io/tarjetas`, {
+const fetchTarjetas = (id) => {
+  return fetch(`http://127.0.0.1:8000/tarjeta/tarjeta/${id}`, {
     next: {
       revalidate: 60,
     },
@@ -15,56 +15,39 @@ const fetchTarjetas = () => {
 
 // Componente con las tarjetas disponibles
 export default async function Tarjetas() {
-  const tarjetas = await fetchTarjetas();
+  const tarjetas = await fetchTarjetas(1);
 
   return (
     <div className="flex gap-8 my-4 md:flex-wrap md:justify-center sm:flex-wrap sm:justify-center">
-      {tarjetas.map((tarjeta) => (
-        <div
-          key={tarjeta.id}
-          className={
-            tarjeta.id == 1
-              ? "bg-orange-500 rounded-lg text-white w-96 h-48 hover:scale-105 transition-all shadow-md shadow-slate-500 hover:border-slate-700 hover:border-l-4"
-              : "bg-slate-700 rounded-lg text-white w-96 h-48 hover:scale-105 transition-all shadow-md shadow-slate-500 hover:border-orange-400 hover:border-l-4"
-          }
-        >
-          <div className="flex items-center justify-between px-3">
+      <div key={tarjetas.id_card} className="bg-orange-500 rounded-lg text-white w-96 h-48 hover:scale-105 transition-all shadow-md shadow-slate-500 hover:border-slate-700 hover:border-l-4">
+      <div className="flex items-center justify-between px-3">
             <Image
               src={Logo}
               alt="Logo Itbank - Tarjetas"
               className="w-20 pt-1"
             />
             <CiMenuKebab
-              className={
-                tarjeta.id == 1
-                  ? "cursor-pointer hover:text-slate-700 transition-colors text-xl"
-                  : "cursor-pointer hover:text-orange-400 transition-colors text-xl"
-              }
+              className="cursor-pointer hover:text-orange-400 transition-colors text-xl"
             />
           </div>
           <div className="flex items-center justify-between px-3 ">
-            <p className="text-2xl tracking-widest">{tarjeta.numero}</p>
+            <p className="text-2xl tracking-widest">{tarjetas.card_number}</p>
             <AiOutlineEye
-              className={
-                tarjeta.id == 1
-                  ? "text-xl hover:text-slate-700 cursor-pointer"
-                  : "text-xl hover:text-orange-400 cursor-pointer"
-              }
+              className= "text-xl hover:text-orange-400 cursor-pointer"
             />
           </div>
           <div className="text-sm p-3">
-            <span className="text-xs">Desde</span> {tarjeta.creacion}{" "}
-            <span className="text-xs">Hasta</span> {tarjeta.vencimiento}
+            <span className="text-xs">Desde</span> {tarjetas.grant_date}{" "}
+            <span className="text-xs">Hasta</span> {tarjetas.expiration_date}
           </div>
           <div className="flex justify-between items-center text-lg px-3 tracking-widest uppercase">
-            {tarjeta.titular}
             <div className="flex items-center gap-2 px-4 text-base">
-              {tarjeta.id != 2 ? <RiVisaFill /> : <RiMastercardFill />}
-              {tarjeta.tipo_tarjeta}
+              {<SiAmericanexpress />}
+              {tarjetas.card_type}
             </div>
           </div>
-        </div>
-      ))}
+
+      </div>
     </div>
   );
 }
